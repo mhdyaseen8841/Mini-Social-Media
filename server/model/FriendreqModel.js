@@ -2,14 +2,14 @@ const mongoose = require('mongoose')
 
 const friendReqModel = mongoose.Schema(
     {
-        userId:{ 
+        from:{ 
             type:mongoose.Schema.Types.ObjectId,
             ref:"User"},
 
-        friendsreq:[{
+        to:{
             type:mongoose.Schema.Types.ObjectId,
             ref:"User",
-        },],
+        },
       
        
     }

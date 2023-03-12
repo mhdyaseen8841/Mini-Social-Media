@@ -78,7 +78,61 @@ const allUsers = asyncHandler(async (req, res) => {
 });
 
 
-module.exports = {registerUser,authUser,allUsers};
+const sendReq = asyncHandler(async (req, res) => {
+ const userid=req.body.userid;
+ //check for this user already sent request or not
+    const checkreq = await Friendreq.findOne({$and:[{from:req.user._id},{to:userid}]})
+    if(checkreq){
+        res.status(400)
+        throw new Error('Request already sent')
+    }
+    
+    //check for this user already friend or not
+    const friend = await Friend.findOne({ userId: req.user.id });
+    // Check if the user is already a friend
+    if(friend){
+    const isFriend = friend.friends.includes(userid);
+    if(isFriend){
+        res.status(400)
+        throw new Error('Already friend')
+    }
+    }
+
+    //add req to db
+    const reqdata = await Friendreq.create({
+        from:req.user._id,
+        to:userid
+    })
+    const populatedReqdata = await Friendreq.findOne({ _id: reqdata._id })
+    .populate("to", "name pic email")
+    .exec();
+
+    if(reqdata){
+       
+        res.status(201).json({
+            populatedReqdata
+        })
+    }else{
+        res.status(400)
+        throw new Error('something went wrong')
+    }
 
 
-// getReq sendReq
+})
+
+
+const getReq = asyncHandler(async (req, res) => {
+
+    const reqdata = await Friendreq.find({to:req.user._id}).populate("from","name pic email")
+    if(reqdata){
+        console.log(reqdata);
+        res.status(201).json(reqdata)
+    }else{
+        res.status(400)
+        throw new Error('something went wrong')
+    }
+})
+
+module.exports = {registerUser,authUser,allUsers,getReq,sendReq};
+
+
