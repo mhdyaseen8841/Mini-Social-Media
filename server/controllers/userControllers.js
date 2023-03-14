@@ -3,7 +3,7 @@ const User = require("../model/userModel");
 const Friend = require("../model/FriendModel");
 const Friendreq = require("../model/FriendreqModel");
 const generateToken = require("../config/generateToken");
-
+const mongoose = require('mongoose');
 
 const registerUser =asyncHandler(async(req,res)=>{
 const {name,email,password,pic} = req.body;
@@ -133,6 +133,120 @@ const getReq = asyncHandler(async (req, res) => {
     }
 })
 
-module.exports = {registerUser,authUser,allUsers,getReq,sendReq};
 
+const acceptReq = asyncHandler(async (req, res) => {
+   
+    
+ const reqId = req.body.reqId;
+ //get req details
+ 
+ const frndreq = await Friendreq.findOne({_id:reqId})
+   if(frndreq){
+    //add friend to friend list
+    const friend = await Friend.findOne({ userId: frndreq.to });
+    if(friend){
+        friend.friends.push(frndreq.from)
+        await friend.save()
+    }else{
+        const newFriend = await Friend.create({
+            userId: frndreq.to,
+            friends: [frndreq.from],
+        });
+    }
+
+    //add friend to friend list
+    const friend2 = await Friend.findOne({ userId: frndreq.from });
+    if(friend2){
+        friend2.friends.push(frndreq.to)
+        await friend2.save()
+    }else{
+        const newFriend = await Friend.create({
+            userId: frndreq.from,
+            friends: [frndreq.to],
+        });
+    }
+
+    //delete req
+    await Friendreq.findByIdAndDelete(reqId)
+    res.status(201).json({msg:"friend added"})
+    }else{
+        res.status(400)
+        throw new Error('something went wrong')
+    }
+
+})
+
+
+const deleteReq = asyncHandler(async (req, res) => {
+
+    const reqId = req.body.reqId;
+
+    const frndreq = await Friendreq.findByIdAndDelete(reqId)
+    if(frndreq){
+        res.status(201).json({msg:"req deleted"})
+    }else{
+        res.status(400)
+        throw new Error('something went wrong')
+    }
+
+}) 
+
+const getUserDetails = asyncHandler(async (req, res) => {
+    const user = await User.findById(req.params.id);
+    if (user) {
+        res.json(user);
+    } else {
+        res.status(404);
+        throw new Error('User not found');
+    }
+});
+
+const viewAllFriends = asyncHandler(async (req, res) => {
+    const friend = await Friend.findOne({ userId: req.user.id });
+    if (friend) {
+        const friends = await User.find({ _id: { $in: friend.friends } });
+        res.json(friends);
+    } else {
+       res.json([]);
+    }
+})
+
+const viewMutualFriends = asyncHandler(async (req, res) => {
+    let currentUserId = req.user.id;
+    let viewedUserId = req.body.id;
+   
+    // Check if viewed user ID is defined
+    if (!viewedUserId) return res.status(400).json({ message: 'Viewed user ID is missing' });
+  
+    console.log(currentUserId, viewedUserId);
+  
+    // Retrieve the list of friends for the current user
+    const friend = await Friend.findOne({ userId: currentUserId });
+    if(friend){
+        const friends = await User.find({ _id: { $in: friend.friends } });
+        const friend2 = await Friend.findOne({ userId: viewedUserId });
+  if(friend2){
+    
+    const friends2 = await User.find({ _id: { $in: friend2.friends } });
+  
+    // Find the intersection of the two lists
+    const mutualFriends = friends.filter((friend) =>
+    friends2.some((friend2) => friend2._id.toString() === friend._id.toString())
+);
+    res.json(mutualFriends);
+  }else{
+res.json([]);
+  }
+       
+
+    }else{
+        res.json([]);
+    
+    }
+    
+  });
+  
+  
+
+module.exports = {registerUser,authUser,allUsers,getReq,sendReq,acceptReq,deleteReq,getUserDetails,viewAllFriends,viewMutualFriends};
 
