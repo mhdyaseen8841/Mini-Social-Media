@@ -28,7 +28,7 @@ if(isChat.length > 0){
     console.log(isChat[0])
     res.send(isChat[0])
 }else{
-console.log("uhuhughug");
+
     var chatData={
         chatName: "sender",
         isGroupChat: false,

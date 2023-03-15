@@ -6,15 +6,15 @@ import { Button, ButtonGroup } from "@chakra-ui/react";
 import { Route, Routes } from "react-router-dom";
 import Homepage from "./pages/Homepage";
 import ChatPage from "./pages/ChatPage";
-import Landing from "./pages/index";
+import Dashboard from "./pages/Dashboard";
 import NotFoundPage from "./pages/404/NotFoundPage";
 function App() {
   return (
     <div className="App">
       <Routes>
-        <Route path="/login" element={<Homepage />} />
+        <Route path="/" element={<Homepage />} />
         <Route path="/chat" element={<ChatPage />} />
-        <Route path="/" element={<Landing />} />
+        <Route path="/landing" element={<Dashboard />} />
 
         <Route path="*" element={<NotFoundPage />} />
       </Routes>

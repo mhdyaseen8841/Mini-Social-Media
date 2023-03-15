@@ -77,6 +77,64 @@ const allUsers = asyncHandler(async (req, res) => {
     
 });
 
+const searchUser = asyncHandler(async (req, res) => {
+ 
+    const keyword = req.query.search ? {   
+        $or: [
+            { name: { $regex: req.query.search, $options: 'i' } },
+            { email: { $regex: req.query.search, $options: 'i' } },
+        ],
+    }:{};
+
+    const getuser = await User.find(keyword).find({ _id: { $ne: req.user._id } })
+   
+    const users=getuser;
+//compare each users with friend list
+   //login user friend list
+    const friend = await Friend.findOne({ userId: req.user.id });
+    let userarr=[];
+    if(friend){
+        console.log('friend');
+    users.map(async(user)=>{
+        let isFriend = friend.friends.includes(user._id);
+        //get this user friend list
+      
+            const obj   = {
+                _id: user._id,
+                name: user.name,
+                email: user.email,
+                pic: user.pic,
+                friend:isFriend
+   
+             }
+
+            
+        userarr.push(obj)
+    
+    })
+    }else{
+        users.map((user)=>{
+            
+            const obj   = {
+                _id: user._id,
+                name: user.name,
+                email: user.email,
+                pic: user.pic,
+                friend:false
+   
+             }
+     
+            userarr.push(obj)
+        })
+
+        console.log('no friend');
+    }
+
+    res.send(userarr)
+    
+});
+
+
 
 const sendReq = asyncHandler(async (req, res) => {
  const userid=req.body.userid;
@@ -218,8 +276,7 @@ const viewMutualFriends = asyncHandler(async (req, res) => {
     // Check if viewed user ID is defined
     if (!viewedUserId) return res.status(400).json({ message: 'Viewed user ID is missing' });
   
-    console.log(currentUserId, viewedUserId);
-  
+   
     // Retrieve the list of friends for the current user
     const friend = await Friend.findOne({ userId: currentUserId });
     if(friend){
@@ -248,5 +305,5 @@ res.json([]);
   
   
 
-module.exports = {registerUser,authUser,allUsers,getReq,sendReq,acceptReq,deleteReq,getUserDetails,viewAllFriends,viewMutualFriends};
+module.exports = {registerUser,authUser,allUsers,getReq,sendReq,acceptReq,deleteReq,getUserDetails,viewAllFriends,viewMutualFriends,searchUser};
 
