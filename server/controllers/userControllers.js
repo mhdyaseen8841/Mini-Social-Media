@@ -5,6 +5,9 @@ const Friendreq = require("../model/FriendreqModel");
 const generateToken = require("../config/generateToken");
 const mongoose = require('mongoose');
 
+
+const { getMutualCount } = require('../helpers/findMutualCount');
+
 const registerUser =asyncHandler(async(req,res)=>{
 const {name,email,password,pic} = req.body;
 
@@ -63,19 +66,13 @@ const authUser = asyncHandler(async (req, res) => {
 
 
 const allUsers = asyncHandler(async (req, res) => {
-
     const keyword = req.query.search ? {   
-        $or: [
-            { name: { $regex: req.query.search, $options: 'i' } },
-            { email: { $regex: req.query.search, $options: 'i' } },
-        ],
-    }:{};
-
-    const users = await User.find(keyword).find({ _id: { $ne: req.user._id } })
-    
-    res.send(users)
-    
+        name: { $regex: req.query.search, $options: 'i' }
+    } : {};
+    const users = await User.find({ ...keyword, _id: { $ne: req.user._id } });
+    res.send(users);
 });
+
 
 const searchUser = asyncHandler(async (req, res) => {
  
@@ -89,50 +86,45 @@ const searchUser = asyncHandler(async (req, res) => {
     const getuser = await User.find(keyword).find({ _id: { $ne: req.user._id } })
    
     const users=getuser;
-//compare each users with friend list
-   //login user friend list
+    let mutualCount=0;
+    //compare each users with friend list
+    //login user friend list
     const friend = await Friend.findOne({ userId: req.user.id });
     let userarr=[];
     if(friend){
-        console.log('friend');
-    users.map(async(user)=>{
-        let isFriend = friend.friends.includes(user._id);
-        //get this user friend list
+        //check here mutual friend count
+        for(let i = 0; i < users.length; i++) {
+            mutualCount = await getMutualCount(req.user._id, users[i]._id);
+            let isFriend = friend.friends.includes(users[i]._id);
+            //get this user friend list
       
-            const obj   = {
-                _id: user._id,
-                name: user.name,
-                email: user.email,
-                pic: user.pic,
-                friend:isFriend
-   
-             }
-
-            
-        userarr.push(obj)
-    
-    })
-    }else{
-        users.map((user)=>{
-            
-            const obj   = {
-                _id: user._id,
-                name: user.name,
-                email: user.email,
-                pic: user.pic,
-                friend:false
-   
-             }
-     
-            userarr.push(obj)
-        })
-
-        console.log('no friend');
+            const obj = {
+                _id: users[i]._id,
+                name: users[i].name,
+                email: users[i].email,
+                pic: users[i].pic,
+                friend: isFriend,
+                mutualCount: mutualCount
+            }
+            userarr.push(obj);
+        }
+    } else {
+        for(let i = 0; i < users.length; i++) {
+            const obj = {
+                _id: users[i]._id,
+                name: users[i].name,
+                email: users[i].email,
+                pic: users[i].pic,
+                friend: false,
+                mutualCount: mutualCount
+            }
+            userarr.push(obj);
+        }
     }
-
     res.send(userarr)
     
 });
+
 
 
 
@@ -183,7 +175,6 @@ const getReq = asyncHandler(async (req, res) => {
 
     const reqdata = await Friendreq.find({to:req.user._id}).populate("from","name pic email")
     if(reqdata){
-        console.log(reqdata);
         res.status(201).json(reqdata)
     }else{
         res.status(400)

@@ -1,17 +1,20 @@
 const asyncHandler = require("express-async-handler");
 const User = require("../model/userModel");
 const Friend = require("../model/FriendModel");
-const Friendreq = require("../model/FriendreqModel");
-const generateToken = require("../config/generateToken");
+
 const mongoose = require('mongoose');
 
 
 
-function getMutualCount(user1,user2)=>{
+const getMutualCount=async(user1,user2)=>{
     let count=0;
 
-    let currentUserId =user1;
+    let currentUserId = user1;
     let viewedUserId = user2;
+
+//     const thisuserfriendlist = await Friend.findOne({ userId: user._id });
+        
+
 
      // Retrieve the list of friends for the current user
      const friend = await Friend.findOne({ userId: currentUserId });
@@ -23,18 +26,23 @@ function getMutualCount(user1,user2)=>{
      const friends2 = await User.find({ _id: { $in: friend2.friends } });
    
      // Find the intersection of the two lists
-     const mutualFriends = friends.filter((friend) =>
-     friends2.some((friend2) => friend2._id.toString() === friend._id.toString())
- );
-     res.json(mutualFriends);
+
+     let mutualFriendsCount = friends.filter((friend) =>
+    friends2.some((friend2) => friend2._id.toString() === friend._id.toString())
+).length;
+
+    return(mutualFriendsCount);
    }else{
- res.json([]);
+ return 0;
    }
         
  
      }else{
-         res.json([]);
+        
+         return 0;
      
      }
     
 }
+
+module.exports = { getMutualCount };

@@ -12,8 +12,9 @@ router.route('/').post(registerUser).get(protect,allUsers);
 
   router.post('/acceptReq',protect,acceptReq);
   router.post('/deleteReq',protect,deleteReq);
-router.post('/viewUserProfile',protect,getUserDetails);
-router.post('/viewAllFriends',protect,viewAllFriends);
- router.post('/viewMutualFriends',protect,viewMutualFriends);
- router.post('/search',protect,searchUser);
+  router.post('/viewUserProfile',protect,getUserDetails);
+  router.post('/viewAllFriends',protect,viewAllFriends);
+  router.post('/viewMutualFriends',protect,viewMutualFriends);
+  router.post('/search',protect,searchUser);
+
 module.exports = router
