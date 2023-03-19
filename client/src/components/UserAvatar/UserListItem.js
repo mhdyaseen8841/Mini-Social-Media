@@ -50,7 +50,6 @@ const UserListItem = ({ Suser, handleFunction,display }) => {
     }
 
      const {data} = await axios.post(`/api/user/viewMutualFriends`, {id:Suser._id}, config)
-     console.log(data);
      setMutual(data)
      onOpen()
   };
@@ -70,10 +69,8 @@ try{
     status: "success",
     isClosable: true,
   })
-     console.log(data);
 }catch(err){
   display();
-  console.log(err.response.data.message);
   toast({
     title: err.response.data.message,
     status: "error",
@@ -92,7 +89,6 @@ try{
     }
 try{
   const {data} = await axios.post(`/api/user/friendReq`, {userid:Suser._id}, config)
-     console.log(data);
      display();
      toast({
       title: "request sent",
@@ -101,7 +97,6 @@ try{
     })
 }catch(err){
   display();
-  console.log(err.response.data.message);
   toast({
     title: err.response.data.message,
     status: "error",

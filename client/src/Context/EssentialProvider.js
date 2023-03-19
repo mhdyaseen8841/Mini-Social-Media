@@ -10,7 +10,6 @@ const ChatProvider = ({ children }) => {
    const [notifications, setNotifications] = useState([]);
    useEffect(() => {
     const userInfo = JSON.parse(localStorage.getItem('userInfo')) 
-    console.log(userInfo)
     setUser(userInfo)
     if(userInfo){
       Navigate("/home")

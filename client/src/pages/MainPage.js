@@ -27,7 +27,6 @@ const fetchFriends = async  () => {
       }
       const {data} = await axios.post(`/api/user/viewAllFriends`,{}, config)
       setFriends(data)
-      console.log("heeheeee")
     }catch(error){
       toast({
         title: "Error Occured! ",

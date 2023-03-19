@@ -6,7 +6,7 @@ const sendMessage = asyncHandler(async (req, res) => {
     const { chatId, content } = req.body;
 
     if(!content || !chatId){
-        console.log("No content or chatId");
+       
         return res.status(400)
        
     }
@@ -18,7 +18,7 @@ const sendMessage = asyncHandler(async (req, res) => {
     }
 
     try{
-console.log(newMessage);
+
 var message = await Message.create(newMessage);
 
 message = await message.populate("sender","name pic");

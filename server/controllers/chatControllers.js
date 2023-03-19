@@ -24,8 +24,7 @@ isChat= await User.populate(isChat,{
     select:"name pic email"
 })
 if(isChat.length > 0){
-    console.log("ehhehhehe");
-    console.log(isChat[0])
+   
     res.send(isChat[0])
 }else{
 

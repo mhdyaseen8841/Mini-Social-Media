@@ -24,7 +24,7 @@ const {user,selectedFriend,setSelectedFriend, notifications,setNotifications} = 
 
 
 useEffect(() => {
-    console.log(selectedFriend)
+   
 
 }, [selectedFriend])
 
