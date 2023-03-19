@@ -7,7 +7,7 @@ import ChatLoading from './ChatLoading';
 
 import { Avatar } from "@chakra-ui/avatar";
 
-function MyFreinds({fetchAgain}) {
+function MyFreinds({fetchFriends}) {
 
 const [loggedUser, setLoggedUser] = useState();
 
@@ -15,32 +15,12 @@ const [loggedUser, setLoggedUser] = useState();
 
 const toast = useToast();
 
-const getFriends = async  () => {
 
-  try{
-    const config = {
-      headers: {
-        Authorization: `Bearer ${user.token}`,
-      },
-    }
-    const {data} = await axios.post(`/api/user/viewAllFriends`,{}, config)
-    setFriends(data)
-  }catch(error){
-    toast({
-      title: "Error Occured! ",
-      description: "Failed to fetch Friends! ",
-      status: "error",
-      duration: 5000,
-      isClosable: true,
-      position: "bottom-left"
-    })
-  }
-}
 
 useEffect(() => {
   setLoggedUser(JSON.parse(localStorage.getItem('userInfo')))
-  getFriends()
-}, [])
+  fetchFriends()
+}, [friends])
 
 
   return (

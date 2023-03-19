@@ -5,8 +5,10 @@ import { Box, Tooltip, Button, Text, Menu, MenuButton, MenuList, MenuItem, MenuD
   DrawerCloseButton,Input, useToast } from "@chakra-ui/react";
   import NotificationBadge from 'react-notification-badge';
 import {Effect} from 'react-notification-badge';
- 
-import React, { useState } from "react";
+import { FaCheck,FaTimes } from "react-icons/fa";
+
+import React, {useEffect, useState} from 'react'
+
 import {BellIcon,ChevronDownIcon} from '@chakra-ui/icons'
 import { Avatar, AvatarBadge, AvatarGroup } from '@chakra-ui/react'
 import { ChatState } from "../../Context/ChatProvider";
@@ -17,9 +19,12 @@ import axios from 'axios'
 import ChatLoading from "./ChatLoading";
 import UserListItem from "../UserAvatar/UserListItem";
 
-function SideDrawer() {
+function SideDrawer({fetchFriends}) {
   const toast = useToast()
-  const {user,setSelectedChat,chats,setChats,notifications,setNotifications} = ChatState();
+  
+const {user,selectedFriend,setSelectedFriend, notifications,setNotifications} = ChatState()
+
+
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [search, setSearch] = useState("");
   
@@ -70,22 +75,11 @@ const { data } = await axios.post(`/api/user/search?search=${search}`, {}, confi
 }
   }
 
-const accessProfile = async (userId) => {
+const accessProfile = async (user) => {
   try{
 setLoadingChat(true)
 
-
-const config = {
-  headers: {
-    "Content-type" : "application/json",
-    Authorization: `Bearer ${user.token}`,
-  },
-}
- const {data} = await axios.post(`/api/chat`, {userId}, config)
- console.log(data);
- if(!chats.find((c)=> c._id === data._id)) setChats([data, ...chats])
-
- setSelectedChat(data)
+setSelectedFriend(user)
 setLoadingChat(false)
 onClose();
   }catch(err){
@@ -102,10 +96,112 @@ onClose();
 
 }
 
+const getFriendReq = async () => {
+  try{
+    const config = {
+      headers: {
+        Authorization: `Bearer ${user.token}`,
+      },
+    }
+
+    const { data } = await axios.get(`/api/user/friendreq`, config);
+    setNotifications(data)
+    console.log(data);
+  }catch(err){
+    toast({
+      title: "Error Occured! ",
+      description: err.message,
+      status: "error",
+      duration: 5000,
+      isClosable: true,
+      position: "bottom-left"
+    })
+  }
+}
+
+const acceptFriend = async (uid) => {
+  try{
+    const config = {
+      headers: {
+        Authorization: `Bearer ${user.token}`,
+      },
+    }
+
+    const { data } = await axios.post(`/api/user/acceptReq`, {id:uid}, config);
+    console.log(data);
+    getFriendReq()
+    toast({
+      title: "New Friend Added ",
+      
+      status: "success",
+      duration: 5000,
+      isClosable: true,
+      position: "bottom-left"
+    })
+   
+    fetchFriends()
+  }catch(err){
+    toast({
+      title: "Error Occured! ",
+      description: err.message,
+      status: "error",
+      duration: 5000,
+      isClosable: true,
+      position: "bottom-left"
+    })
+  }finally{
+    onClose()
+  }
+}
+
+const declineFriend = async (reqid) => {
+  try{
+    const config = {
+      headers: {
+        Authorization: `Bearer ${user.token}`,
+      },
+    }
+
+    const { data } = await axios.post(`/api/user/deleteReq`, {reqId:reqid}, config);
+    console.log(data);
+    toast({
+      title: "Friend Removed ",
+      status: "success",
+      duration: 5000,
+      isClosable: true,
+      position: "bottom-left"
+    })
+    getFriendReq()
+    fetchFriends()
+  }catch(err){
+    toast({
+      title: "Error Occured! ",
+      description: err.message,
+      status: "error",
+      duration: 5000,
+      isClosable: true,
+      position: "bottom-left"
+    })
+  }finally{
+    onClose()
+  }
+}
+
+
 const logoutHandler = () => {
   localStorage.removeItem("userInfo");
   Navigate("/")
 }
+
+
+useEffect(() => {
+  const intervalId = setInterval(() => {
+    // Fetch new notifications from the server
+    getFriendReq()
+  }, 5000); // Refresh every 5 seconds
+
+  return () => clearInterval(intervalId); // Cleanup the interval when the component unmounts
+}, []);
 
   return (
     <>
@@ -127,7 +223,7 @@ const logoutHandler = () => {
           </Button>
         </Tooltip>
         <Text fontSize="2xl" >
-          Hstory
+        Mini Social Media
         </Text>
         <div>
           <Menu>
@@ -141,13 +237,34 @@ effect = {Effect.SCALE}
 <BellIcon fontSize="2xl" m={1} />
 </MenuButton>
 <MenuList pl={2}>
-  {!notifications.length && "No New Messages"}
+  {!notifications.length && "No New Requests"}
   {notifications.map((n) => (
-<MenuItem key={n._id} onClick={()=>{
-  setSelectedChat(n.chat)
-  setNotifications(notifications.filter((n)=> n.chat._id !== n.chat._id))
-}}>
-{n.chat.isGroupChat?`New Message in ${n.chat.chatName}`:`New Message from ${getSender(user,n.chat.users)}`}
+<MenuItem key={n._id}>
+  <Box pr={3}>
+  <Avatar
+ 
+ size="sm"
+ 
+  cursor="pointer"
+  name={n.from.name}
+  src={n.from.pic}
+  mr={3}
+/>
+New Request from  {n.from.name} 
+  </Box>
+ 
+  <Tooltip label='Accept' >
+  <Box pr={3}  onClick={()=>acceptFriend(n.from._id)}>
+<FaCheck style={{ color: '#4267B2' }} pl={3} />
+</Box>
+</Tooltip>
+
+
+<Tooltip label='Decline' >
+<Box pr={3}  onClick={()=>declineFriend(n._id)}>
+<FaTimes style={{ color: '#D0342C' }} pl={3} />
+ </Box>
+</Tooltip>
 </MenuItem>
   ))}
     
@@ -191,7 +308,7 @@ searchResults?.map(user =>(
   key={user._id}
   Suser={user}
   display={handleSearch}
-  handleFunction={()=>accessProfile(user._id)}
+  handleFunction={()=>accessProfile(user)}
   />
 ))
 )

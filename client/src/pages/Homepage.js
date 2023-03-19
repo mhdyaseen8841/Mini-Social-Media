@@ -26,7 +26,7 @@ borderRadius="lg"
 borderWidth="1px"
 >
     <Text fontSize='4xl' fontFamily='work sans' color='black'>
-HStory
+Mini Social Media
     </Text>
     
 </Box>

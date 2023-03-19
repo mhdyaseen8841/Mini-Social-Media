@@ -264,15 +264,15 @@ const deleteFriend = asyncHandler(async (req, res) => {
         const friend1 =await Friend.findOne({userId:userID})
         if(friend1){
             friend1.friends.pull(req.user.id)
-            await friend.save()
+            await friend1.save() // Fixed this line
         }
         res.status(201).json({msg:"friend deleted"})
-    }catch(err){
-
-res.status(400).json({msg:"something went wrong"})
+    } catch(err) {
+        res.status(400).json({msg:"something went wrong"})
     }
-   
-})  
+});
+
+
 
     
 

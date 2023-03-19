@@ -4,10 +4,9 @@ import axios from 'axios'
 import React, {useEffect, useState} from 'react'
 
 import { ChatState } from '../../Context/ChatProvider'
-import ProfileModal from './ProfileModal'
+
 import { Avatar } from "@chakra-ui/avatar";
 import "./styles.css"
-import ScrollableChat from './ScrollableChat'
 
 
 
@@ -22,30 +21,7 @@ const [loading,setLoading] = useState(false)
 
 const {user,selectedFriend,setSelectedFriend, notifications,setNotifications} = ChatState()
 
-const [friend,setFriend] = useState([])
 
-// const getProfile = async  () => {
-
-//   try{
-//     const config = {
-//       headers: {
-//         Authorization: `Bearer ${user.token}`,
-//       },
-//     }
-//     const {data} = await axios.post(`/api/user/viewUserProfile`,{id:selectedFriend._id}, config)
-//     setFriend(data)
-//     console.log(data)
-//   }catch(error){
-//     toast({
-//       title: "Error Occured! ",
-//       description: "Failed to fetch Friend! ",
-//       status: "error",
-//       duration: 5000,
-//       isClosable: true,
-//       position: "bottom-left"
-//     })
-//   }
-// }
 
 useEffect(() => {
     console.log(selectedFriend)
