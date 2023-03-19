@@ -2,7 +2,8 @@ import { Box, Stack, useToast, Text } from "@chakra-ui/react";
 import React, { useState, useEffect } from "react";
 import { ChatState } from "../../Context/EssentialProvider";
 import axios from "axios";
-
+import { FaUserPlus, FaUserTimes } from "react-icons/fa";
+import { Tooltip } from "@chakra-ui/react";
 import ChatLoading from "./ChatLoading";
 
 import { Avatar } from "@chakra-ui/avatar";
@@ -14,6 +15,35 @@ function MyFreinds({ fetchFriends }) {
     ChatState();
 
   const toast = useToast();
+
+  const unfriendHandle = async (uid) => {
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${user.token}`,
+      },
+    };
+    try {
+      const { data } = await axios.post(
+        `/api/user/removeFriend`,
+        { id: uid },
+        config
+      );
+      fetchFriends();
+      toast({
+        title: "Friend removed",
+        status: "success",
+        isClosable: true,
+      });
+    } catch (err) {
+      fetchFriends();
+      toast({
+        title: err.response.data.message,
+        status: "error",
+        isClosable: true,
+      });
+    }
+  };
 
   useEffect(() => {
     setLoggedUser(JSON.parse(localStorage.getItem("userInfo")));
@@ -58,7 +88,6 @@ function MyFreinds({ fetchFriends }) {
           <Stack>
             {friends.map((friend) => (
               <Box
-                onClick={() => setSelectedFriend(friend)}
                 cursor="pointer"
                 bg={selectedFriend === friend ? "#38B2AC" : "#E8E8E8"}
                 color={selectedFriend === friend ? "white" : "black"}
@@ -68,6 +97,7 @@ function MyFreinds({ fetchFriends }) {
                 key={friend._id}
               >
                 <Avatar
+                  onClick={() => setSelectedFriend(friend)}
                   mr={2}
                   size="sm"
                   cursor="pointer"
@@ -75,10 +105,19 @@ function MyFreinds({ fetchFriends }) {
                   src={friend.pic}
                 />
                 <Box>
-                  <Text>{friend.name}</Text>
-                  <Text fontSize="xs">
+                  <Text onClick={() => setSelectedFriend(friend)}>
+                    {friend.name}
+                  </Text>
+                  <Text onClick={() => setSelectedFriend(friend)} fontSize="xs">
                     <b>Email:</b> {friend.email}
                   </Text>
+                  <Tooltip label="UnFriend">
+                    <Box onClick={() => unfriendHandle(friend._id)}>
+                      <FaUserTimes
+                        style={{ color: "#D0342C", float: "right" }}
+                      />
+                    </Box>
+                  </Tooltip>
                 </Box>
               </Box>
             ))}
