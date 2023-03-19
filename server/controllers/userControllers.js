@@ -131,7 +131,13 @@ const searchUser = asyncHandler(async (req, res) => {
 const sendReq = asyncHandler(async (req, res) => {
  const userid=req.body.userid;
  //check for this user already sent request or not
-    const checkreq = await Friendreq.findOne({$and:[{from:req.user._id},{to:userid}]})
+ const checkreq = await Friendreq.findOne({
+    $or: [
+      { $and: [{ from: req.user._id }, { to: userid }] },
+      { $and: [{ from: userid }, { to: req.user._id }] },
+    ],
+  });
+  
     if(checkreq){
         res.status(400)
         throw new Error('Request already sent')
@@ -185,12 +191,13 @@ const getReq = asyncHandler(async (req, res) => {
 
 const acceptReq = asyncHandler(async (req, res) => {
    
+    const userId =req.body.id;
+    //find reqid using users ids
     
- const reqId = req.body.reqId;
- //get req details
- 
- const frndreq = await Friendreq.findOne({_id:reqId})
-   if(frndreq){
+    
+
+ const frndreq = await Friendreq.findOne({$and:[{from:userId},{to:req.user._id}]})
+ if(frndreq){
     //add friend to friend list
     const friend = await Friend.findOne({ userId: frndreq.to });
     if(friend){
@@ -216,7 +223,7 @@ const acceptReq = asyncHandler(async (req, res) => {
     }
 
     //delete req
-    await Friendreq.findByIdAndDelete(reqId)
+    await Friendreq.findByIdAndDelete(frndreq._id)
     res.status(201).json({msg:"friend added"})
     }else{
         res.status(400)
@@ -239,6 +246,35 @@ const deleteReq = asyncHandler(async (req, res) => {
     }
 
 }) 
+
+const deleteFriend = asyncHandler(async (req, res) => {
+    const userID = req.body.id;
+    //delete friend from friend list
+
+    try{
+        
+        const friend = await Friend.findOne({ userId: req.user.id });
+        if(friend){
+            friend.friends.pull(userID)
+            await friend.save()
+        }
+    
+        //delete friend from friend list
+    
+        const friend1 =await Friend.findOne({userId:userID})
+        if(friend1){
+            friend1.friends.pull(req.user.id)
+            await friend.save()
+        }
+        res.status(201).json({msg:"friend deleted"})
+    }catch(err){
+
+res.status(400).json({msg:"something went wrong"})
+    }
+   
+})  
+
+    
 
 const getUserDetails = asyncHandler(async (req, res) => {
     const user = await User.findById(req.params.id);
@@ -296,5 +332,5 @@ res.json([]);
   
   
 
-module.exports = {registerUser,authUser,allUsers,getReq,sendReq,acceptReq,deleteReq,getUserDetails,viewAllFriends,viewMutualFriends,searchUser};
+module.exports = {registerUser,authUser,allUsers,getReq,sendReq,acceptReq,deleteReq,deleteFriend,getUserDetails,viewAllFriends,viewMutualFriends,searchUser};
 

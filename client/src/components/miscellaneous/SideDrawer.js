@@ -51,10 +51,13 @@ const config = {
     Authorization: `Bearer ${user.token}`,
   },
 }
-  const {data} = await axios.get(`/api/user?search=${search}`, config)
+
+const { data } = await axios.post(`/api/user/search?search=${search}`, {}, config);
+
 
   setLoading(false)
   setSearchResults(data)
+  console.log(data);
 }catch(error){
   toast({
     title: "Error Occured! ",
@@ -186,7 +189,7 @@ effect = {Effect.SCALE}
 searchResults?.map(user =>(
   <UserListItem
   key={user._id}
-  user={user}
+  Suser={user}
   handleFunction={()=>accessChat(user._id)}
   />
 ))

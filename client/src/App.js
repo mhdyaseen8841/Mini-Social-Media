@@ -1,7 +1,6 @@
 import logo from "./logo.svg";
 import "./App.css";
 import React, { useEffect, useState } from "react";
-import io from "socket.io-client";
 import { Button, ButtonGroup } from "@chakra-ui/react";
 import { Route, Routes } from "react-router-dom";
 import Homepage from "./pages/Homepage";
