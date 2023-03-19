@@ -1,4 +1,4 @@
-import React from 'react'
+import React,{useEffect} from 'react'
 import { useDisclosure,Image,Text } from '@chakra-ui/react'
 import { IconButton } from '@chakra-ui/button'
 import { ViewIcon } from '@chakra-ui/icons'
@@ -12,16 +12,26 @@ import {
   ModalCloseButton,
   Button,
 } from '@chakra-ui/react'
+import { Stack, HStack, VStack,Box } from '@chakra-ui/react'
 function ProfileModal({user, children}) {
 
   const { isOpen, onOpen, onClose } = useDisclosure()
+
+
+
   return (
     <>
     {children ? ( <span onCLick={onOpen}>{children}</span> ):(
+      <>
+      <HStack pl={5} spacing='24px'>
+        
+      <Text><b>{user.name}</b></Text>
  <IconButton d={{ base : "flex"}}
  icon={<ViewIcon/>}
 onClick={onOpen}
  />
+ </HStack>
+ </>
     )}
 
 <Modal size="lg" isCentered isOpen={isOpen} onClose={onClose}>
@@ -55,7 +65,7 @@ fontFamily="work sans"
             <Button colorScheme='blue' mr={3} onClick={onClose}>
               Close
             </Button>
-            <Button variant='ghost'>Secondary Action</Button>
+            
           </ModalFooter>
         </ModalContent>
       </Modal>
