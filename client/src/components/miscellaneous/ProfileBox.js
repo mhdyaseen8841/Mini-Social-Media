@@ -17,7 +17,7 @@ const ProfileBox = () => {
       borderRadius="lg"
       borderWidth="1px"
     >
-      <SingleProfile  />
+      <SingleProfile />
     </Box>
   );
 };
