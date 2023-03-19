@@ -9,9 +9,8 @@ const mongoose = require('mongoose');
 const { getMutualCount } = require('../helpers/findMutualCount');
 
 const registerUser =asyncHandler(async(req,res)=>{
-const {name,email,password,pic} = req.body;
-
-if(!name || !email || !password){
+const {name,email,password,pic,address,mobno} = req.body;
+if(!name || !email || !password || !address || !mobno){
     res.status(400)
     throw new Error('Please enter all fields')
 }
@@ -24,7 +23,9 @@ const user = await User.create({
     name,
     email,
     password,
-    pic
+    pic,
+    address,
+    mobno
 })
 
 if(user){
@@ -33,6 +34,8 @@ if(user){
         name:user.name,
         email:user.email,
         pic:user.pic,
+        address:user.address,
+        mobno:user.mobno,
         token:generateToken(user._id)
     
     })
@@ -54,6 +57,8 @@ const authUser = asyncHandler(async (req, res) => {
             name:user.name,
             email:user.email,
             pic:user.pic,
+            address:user.address,
+            mobno:user.mobno,
             token:generateToken(user._id)
         })
     }else{

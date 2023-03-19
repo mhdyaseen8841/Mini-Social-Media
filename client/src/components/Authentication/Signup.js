@@ -6,6 +6,8 @@ function Signup() {
     const toast = useToast()
     const Navigate = useNavigate();
     const [name, setName] = useState();
+    const [mob, setMob] = useState();
+    const [address, setAdd] = useState();
     const [email, setEmail] = useState();
     const [confirmpassword, setConfirmpassword] = useState();
     const [password, setPassword] = useState();
@@ -17,7 +19,7 @@ function Signup() {
 
 const submitHandler = async (e) => {
     setLoading(true)
-    if(!name || !email || !password || !confirmpassword ){
+    if(!name || !email || !password || !confirmpassword || !mob || !address){
         toast({
             title: "Fill all the fields! ",
             status: "error",
@@ -44,7 +46,7 @@ const config = {
     },
 
 }
-const {data} = await axios.post("/api/user",{name,email,password,pic},config)
+const {data} = await axios.post("/api/user",{name,email,password,pic,address:address,mobno:mob},config)
 toast({
     title: "Registration Successful! ",
     status: "success",
@@ -86,10 +88,9 @@ if(pic===undefined){
 
     fetch("https://api.cloudinary.com/v1_1/dmgqvkhtp/image/upload",{method:"post",body:data}).then((res)=>res.json()).then((data)=>{
         setPic(data.url.toString());
-        console.log(pic);
+      
         setLoading(false)
     }).catch((err)=>{
-        console.log(err)
         setLoading(false)
     })
 }else{
@@ -125,6 +126,25 @@ Email
         placeholder='Enter Your Email'
         onChange={(e)=>setEmail(e.target.value)}/>
     </FormControl>
+
+    <FormControl id='first-name' isRequired>
+        <FormLabel>
+Address
+        </FormLabel>
+        <Input
+        placeholder='Enter Your Address'
+        onChange={(e)=>setAdd(e.target.value)}/>
+    </FormControl>
+
+    <FormControl id='first-name' isRequired>
+        <FormLabel>
+Mobile
+        </FormLabel>
+        <Input
+        placeholder='Enter Your Mobile No'
+        onChange={(e)=>setMob(e.target.value)}/>
+    </FormControl>
+
 
     <FormControl id='Spassword' isRequired>
 

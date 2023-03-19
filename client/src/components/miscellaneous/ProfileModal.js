@@ -36,7 +36,7 @@ onClick={onOpen}
 
 <Modal size="lg" isCentered isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
-        <ModalContent h="410px">
+        <ModalContent h="500px">
           <ModalHeader
           fontSize="40px"
           fontFamily="work sans"
@@ -58,6 +58,19 @@ onClick={onOpen}
 fontFamily="work sans"
 >
   Email: {user.email}
+</Text>
+
+<Text
+          fontSize={{base:"20px",md:"30px"}}
+fontFamily="work sans"
+>
+  Mobile No: {user.mobno}
+</Text>
+<Text
+          fontSize={{base:"10px",md:"20px"}}
+fontFamily="work sans"
+>
+  Address: {user.address}
 </Text>
           </ModalBody>
 

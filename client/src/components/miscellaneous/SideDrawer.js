@@ -63,7 +63,6 @@ const { data } = await axios.post(`/api/user/search?search=${search}`, {}, confi
   setLoading(false)
   setSearchResults(data)
   
-  console.log(data);
 }catch(error){
   
   toast({
@@ -108,7 +107,6 @@ const getFriendReq = async () => {
 
     const { data } = await axios.get(`/api/user/friendreq`, config);
     setNotifications(data)
-    console.log(data);
   }catch(err){
     toast({
       title: "Error Occured! ",
@@ -130,7 +128,6 @@ const acceptFriend = async (uid) => {
     }
 
     const { data } = await axios.post(`/api/user/acceptReq`, {id:uid}, config);
-    console.log(data);
     getFriendReq()
     toast({
       title: "New Friend Added ",
@@ -165,7 +162,6 @@ const declineFriend = async (reqid) => {
     }
 
     const { data } = await axios.post(`/api/user/deleteReq`, {reqId:reqid}, config);
-    console.log(data);
     toast({
       title: "Friend Removed ",
       status: "success",

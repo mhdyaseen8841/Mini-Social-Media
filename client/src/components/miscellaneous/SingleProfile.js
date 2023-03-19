@@ -103,6 +103,14 @@ useEffect(() => {
    
 </Text>
 <Text>
+ADDRESS: <b> {selectedFriend.address}</b>
+   
+</Text>
+<Text>
+MOB NO: <b> {selectedFriend.mobno}</b>
+   
+</Text>
+<Text>
 Email ID: <b> {selectedFriend.email}</b>
    
 </Text>
