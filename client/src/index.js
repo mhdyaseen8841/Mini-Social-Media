@@ -5,7 +5,7 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { ChakraProvider } from '@chakra-ui/react'
 import {BrowserRouter,Routes} from 'react-router-dom'
-import ChatProvider from './Context/ChatProvider';
+import ChatProvider from './Context/EssentialProvider';
 import ErrorBoundary from './Context/ErrorBoundary';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

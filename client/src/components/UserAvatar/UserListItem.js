@@ -13,13 +13,26 @@ import {
   ModalCloseButton,
   Button,
 } from '@chakra-ui/react'
+
 import axios from "axios";
+import {
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogContent,
+  AlertDialogOverlay,
+} from '@chakra-ui/react'
 //chakraa ui icons
-import { ChatState } from "../../Context/ChatProvider";
+import { ChatState } from "../../Context/EssentialProvider";
 import { Flex } from "@chakra-ui/react";
  import { FaUserPlus,FaUserTimes } from "react-icons/fa";
 
 
+
+
+
+ 
 
 const UserListItem = ({ Suser, handleFunction,display }) => {
 
@@ -52,8 +65,14 @@ const UserListItem = ({ Suser, handleFunction,display }) => {
 try{
   const {data} = await axios.post(`/api/user/removeFriend`, {id:Suser._id}, config)
   display();
+  toast({
+    title: "Friend removed",
+    status: "success",
+    isClosable: true,
+  })
      console.log(data);
 }catch(err){
+  display();
   console.log(err.response.data.message);
   toast({
     title: err.response.data.message,
@@ -74,12 +93,14 @@ try{
 try{
   const {data} = await axios.post(`/api/user/friendReq`, {userid:Suser._id}, config)
      console.log(data);
+     display();
      toast({
       title: "request sent",
       status: "success",
       isClosable: true,
     })
 }catch(err){
+  display();
   console.log(err.response.data.message);
   toast({
     title: err.response.data.message,

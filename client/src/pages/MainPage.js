@@ -1,15 +1,15 @@
 import { logDOM } from '@testing-library/react'
 import React from 'react'
 import axios from 'axios'
-import {ChatState} from '../Context/ChatProvider'
+import {ChatState} from '../Context/EssentialProvider'
 import { useEffect ,useState} from 'react'
 import { Box,useToast } from '@chakra-ui/react'
 import SideDrawer from '../components/miscellaneous/SideDrawer'
 import MyFreinds from '../components/miscellaneous/MyFriends'
-import ChatBox from '../components/miscellaneous/ChatBox'
+import ProfileBox from '../components/miscellaneous/ProfileBox'
 import { useNavigate } from 'react-router-dom';
 
-function ChatPage() {
+function MainPage() {
 
     const toast = useToast()
     const {selectedFriend, setSelectedFriend, user, setFriends,friends} = ChatState()
@@ -62,10 +62,10 @@ h='91.5vh'
 p='10px'
 >
     {user && <MyFreinds fetchFriends={fetchFriends} />}
-    {user && <ChatBox  />}
+    {user && <ProfileBox  />}
 </Box>
     </div>
   )
 }
 
-export default ChatPage
+export default MainPage

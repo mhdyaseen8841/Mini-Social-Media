@@ -53,7 +53,7 @@ toast({
   })
   localStorage.setItem("userInfo",JSON.stringify(data))
   setLoading(false)
-  Navigate("/chat")
+  Navigate("/home")
     }catch(err){
         toast({
             title: "Error Occured! ",

@@ -3,7 +3,7 @@ import { Box, FormControl, IconButton, Input, Spinner, Text, useToast } from '@c
 import axios from 'axios'
 import React, {useEffect, useState} from 'react'
 
-import { ChatState } from '../../Context/ChatProvider'
+import { ChatState } from '../../Context/EssentialProvider'
 
 import { Avatar } from "@chakra-ui/avatar";
 import "./styles.css"

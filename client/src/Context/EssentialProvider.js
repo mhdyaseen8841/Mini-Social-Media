@@ -13,7 +13,7 @@ const ChatProvider = ({ children }) => {
     console.log(userInfo)
     setUser(userInfo)
     if(userInfo){
-      Navigate("/chat")
+      Navigate("/home")
     }
   }, [Navigate])
 

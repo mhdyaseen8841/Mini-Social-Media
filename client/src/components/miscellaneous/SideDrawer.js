@@ -11,7 +11,7 @@ import React, {useEffect, useState} from 'react'
 
 import {BellIcon,ChevronDownIcon} from '@chakra-ui/icons'
 import { Avatar, AvatarBadge, AvatarGroup } from '@chakra-ui/react'
-import { ChatState } from "../../Context/ChatProvider";
+import { ChatState } from "../../Context/EssentialProvider";
 import {Spinner} from "@chakra-ui/spinner"
 import ProfileModal from "./ProfileModal";
 import { useNavigate } from 'react-router-dom'
@@ -62,8 +62,10 @@ const { data } = await axios.post(`/api/user/search?search=${search}`, {}, confi
 
   setLoading(false)
   setSearchResults(data)
+  
   console.log(data);
 }catch(error){
+  
   toast({
     title: "Error Occured! ",
     description: "Failed to search users! ",

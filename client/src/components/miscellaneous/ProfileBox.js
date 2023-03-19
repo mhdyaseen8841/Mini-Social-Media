@@ -1,9 +1,9 @@
 import { Box } from "@chakra-ui/layout";
 
-import { ChatState } from "../../Context/ChatProvider";
+import { ChatState } from "../../Context/EssentialProvider";
 import SingleProfile from "./SingleProfile";
 
-const Chatbox = () => {
+const ProfileBox = () => {
   const { selectedFriend } = ChatState();
 
   return (
@@ -22,4 +22,4 @@ const Chatbox = () => {
   );
 };
 
-export default Chatbox;
+export default ProfileBox;
