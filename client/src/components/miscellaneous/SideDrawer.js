@@ -16,7 +16,7 @@ import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import ChatLoading from "./ChatLoading";
 import UserListItem from "../UserAvatar/UserListItem";
-import { getSender } from "../../config/ChatLogics";
+
 function SideDrawer() {
   const toast = useToast()
   const {user,setSelectedChat,chats,setChats,notifications,setNotifications} = ChatState();
@@ -70,7 +70,7 @@ const { data } = await axios.post(`/api/user/search?search=${search}`, {}, confi
 }
   }
 
-const accessChat = async (userId) => {
+const accessProfile = async (userId) => {
   try{
 setLoadingChat(true)
 
@@ -118,9 +118,9 @@ const logoutHandler = () => {
         p="5px 10px 5px 10px"
         borderWidth="5px"
       >
-        <Tooltip label="Search users to chat" hasArrow placement="bottom-end">
+        <Tooltip label="Search users " hasArrow placement="bottom-end">
           <Button variant="ghost" onClick={onOpen}>
-            <i class="fa-solid fa-magnifying-glass"></i>
+            <i className="fa-solid fa-magnifying-glass"></i>
             <Text display={{ sm: "none", md: "flex" }} px="4">
               Search User
             </Text>
@@ -190,7 +190,8 @@ searchResults?.map(user =>(
   <UserListItem
   key={user._id}
   Suser={user}
-  handleFunction={()=>accessChat(user._id)}
+  display={handleSearch}
+  handleFunction={()=>accessProfile(user._id)}
   />
 ))
 )

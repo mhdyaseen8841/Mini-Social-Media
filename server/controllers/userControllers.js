@@ -252,7 +252,7 @@ const deleteFriend = asyncHandler(async (req, res) => {
     //delete friend from friend list
 
     try{
-        
+
         const friend = await Friend.findOne({ userId: req.user.id });
         if(friend){
             friend.friends.pull(userID)
@@ -277,7 +277,8 @@ res.status(400).json({msg:"something went wrong"})
     
 
 const getUserDetails = asyncHandler(async (req, res) => {
-    const user = await User.findById(req.params.id);
+    uid =req.body.id;
+    const user = await User.findById(uid);
     if (user) {
         res.json(user);
     } else {
@@ -329,6 +330,7 @@ res.json([]);
     }
     
   });
+  
   
   
 

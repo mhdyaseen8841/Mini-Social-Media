@@ -2,7 +2,7 @@ import { Avatar } from "@chakra-ui/avatar";
 import { Box, Text, VStack } from "@chakra-ui/layout";
 import { useDisclosure } from '@chakra-ui/react'
 import React, { useState } from "react";
-
+import { useToast } from '@chakra-ui/react'
 import {
   Modal,
   ModalOverlay,
@@ -18,11 +18,15 @@ import axios from "axios";
 import { ChatState } from "../../Context/ChatProvider";
 import { Flex } from "@chakra-ui/react";
  import { FaUserPlus,FaUserTimes } from "react-icons/fa";
-const UserListItem = ({ Suser, handleFunction }) => {
+
+
+
+const UserListItem = ({ Suser, handleFunction,display }) => {
 
   const [mutual, setMutual] = useState([])
   const {user} = ChatState();
   const { isOpen, onOpen, onClose } = useDisclosure()
+  const toast = useToast()
   const handleMutualFriend = async () => {
     
     const config = {
@@ -39,7 +43,25 @@ const UserListItem = ({ Suser, handleFunction }) => {
   };
 
   const unfriendHandle = async () =>{
-
+    const config = {
+      headers: {
+        "Content-type" : "application/json",
+        Authorization: `Bearer ${user.token}`,
+      },
+    }
+try{
+  const {data} = await axios.post(`/api/user/removeFriend`, {id:Suser._id}, config)
+  display();
+     console.log(data);
+}catch(err){
+  console.log(err.response.data.message);
+  toast({
+    title: err.response.data.message,
+    status: "error",
+    isClosable: true,
+  })
+}
+   
   }
 
   const addFriendHandle = async ()=>{
@@ -49,9 +71,23 @@ const UserListItem = ({ Suser, handleFunction }) => {
         Authorization: `Bearer ${user.token}`,
       },
     }
-
-     const {data} = await axios.post(`/api/user/friendReq`, {userid:Suser._id}, config)
+try{
+  const {data} = await axios.post(`/api/user/friendReq`, {userid:Suser._id}, config)
      console.log(data);
+     toast({
+      title: "request sent",
+      status: "success",
+      isClosable: true,
+    })
+}catch(err){
+  console.log(err.response.data.message);
+  toast({
+    title: err.response.data.message,
+    status: "error",
+    isClosable: true,
+  })
+}
+   
      
   }
   return (

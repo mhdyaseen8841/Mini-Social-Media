@@ -5,7 +5,7 @@ import {ChatState} from '../Context/ChatProvider'
 import { useEffect ,useState} from 'react'
 import { Box } from '@chakra-ui/react'
 import SideDrawer from '../components/miscellaneous/SideDrawer'
-import MyChats from '../components/miscellaneous/MyChats'
+import MyChats from '../components/miscellaneous/MyFriends'
 import ChatBox from '../components/miscellaneous/ChatBox'
 import { useNavigate } from 'react-router-dom';
 
@@ -35,8 +35,8 @@ w='100%'
 h='91.5vh'
 p='10px'
 >
-    {user && <MyChats fetchAgain={fetchAgain} />}
-    {user && <ChatBox fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />}
+    {user && <MyChats  />}
+    {user && <ChatBox  />}
 </Box>
     </div>
   )

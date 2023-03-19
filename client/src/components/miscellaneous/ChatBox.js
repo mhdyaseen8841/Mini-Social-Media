@@ -1,14 +1,14 @@
 import { Box } from "@chakra-ui/layout";
 
 import { ChatState } from "../../Context/ChatProvider";
-import SingleChat from "./SingleChat";
+import SingleProfile from "./SingleProfile";
 
-const Chatbox = ({ fetchAgain, setFetchAgain }) => {
-  const { selectedChat } = ChatState();
+const Chatbox = () => {
+  const { selectedFriend } = ChatState();
 
   return (
     <Box
-      display={{ base: selectedChat ? "flex" : "none", md: "flex" }}
+      display={{ base: selectedFriend ? "flex" : "none", md: "flex" }}
       alignItems="center"
       flexDir="column"
       p={3}
@@ -17,7 +17,7 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
       borderRadius="lg"
       borderWidth="1px"
     >
-      <SingleChat fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
+      <SingleProfile  />
     </Box>
   );
 };
